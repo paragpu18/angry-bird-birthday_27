@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Happy Birthday, Angry Bird! 🐦✨</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- GSAP for Smooth Animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        darkbg: '#08080c',
+                    },
+                    fontFamily: {
+                        serif: ['"Playfair Display"', 'serif'],
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        * {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #08080c;
+            color: #e2e8f0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+        }
+
+        /* Animated Breathing Aurora Background */
+        .aurora-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(147, 51, 234, 0.18), transparent 45%),
+                radial-gradient(circle at 80% 30%, rgba(59, 130, 246, 0.15), transparent 45%),
+                radial-gradient(circle at 50% 80%, rgba(236, 72, 153, 0.15), transparent 50%),
+                radial-gradient(circle at 70% 70%, rgba(6, 182, 212, 0.12), transparent 40%),
+                radial-gradient(circle at 30% 60%, rgba(234, 179, 8, 0.08), transparent 40%);
+            filter: blur(60px);
+            animation: auroraBreathe 12s ease-in-out infinite alternate;
+        }
+
+        @keyframes auroraBreathe {
+            0% {
+                transform: scale(1) rotate(0deg);
+                opacity: 0.85;
+            }
+            50% {
+                transform: scale(1.08) rotate(2deg);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(0.95) rotate(-2deg);
+                opacity: 0.9;
+            }
+        }
+
+        .aurora-bright {
+            animation: auroraGlow 4s ease-in-out infinite alternate !important;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(147, 51, 234, 0.35), transparent 50%),
+                radial-gradient(circle at 80% 30%, rgba(59, 130, 246, 0.3), transparent 50%),
+                radial-gradient(circle at 50% 80%, rgba(236, 72, 153, 0.35), transparent 55%),
+                radial-gradient(circle at 70% 70%, rgba(6, 182, 212, 0.25), transparent 45%),
+                radial-gradient(circle at 30% 60%, rgba(234, 179, 8, 0.2), transparent 45%) !important;
+        }
+
+        @keyframes auroraGlow {
+            0% { opacity: 0.8; transform: scale(1); }
+            100% { opacity: 1; transform: scale(1.15); }
+        }
+
+        /* Glassmorphism Card Style - Optimized for Mobile */
+        .glass-card {
+            background: rgba(18, 18, 28, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+            border-radius: 1.25rem;
+        }
+
+        @media (min-width: 640px) {
+            .glass-card {
+                border-radius: 1.5rem;
+            }
+        }
+
+        /* Text Gradient for Headings */
+        .gradient-heading {
+            background: linear-gradient(135deg, #ffffff 0%, #c084fc 35%, #60a5fa 70%, #fef08a 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Gradient Pill Button */
+        .btn-gradient {
+            background: linear-gradient(135deg, #8b5cf6 0%, #3b82f6 50%, #ec4899 100%);
+            background-size: 200% 200%;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 25px -5px rgba(139, 92, 246, 0.4);
+        }
+
+        .btn-gradient:hover, .btn-gradient:active {
+            background-position: right center;
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 15px 35px -5px rgba(236, 72, 153, 0.6);
+        }
+
+        /* Micro-interaction Hover Classes */
+        .angry-bird-hover {
+            display: inline-block;
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .angry-bird-hover:hover, .angry-bird-hover:active {
+            animation: angryShake 0.4s ease-in-out infinite alternate;
+        }
+
+        @keyframes angryShake {
+            0% { transform: rotate(-8deg) scale(1.1); }
+            100% { transform: rotate(8deg) scale(1.1); }
+        }
+
+        .cutie-hover {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .cutie-hover:hover, .cutie-hover:active {
+            text-shadow: 0 0 12px rgba(244, 114, 182, 0.8), 0 0 20px rgba(192, 132, 252, 0.6);
+            transform: scale(1.05);
+        }
+
+        /* Polaroid Canvas Frame */
+        .polaroid-frame {
+            background: #ffffff;
+            padding: 10px 10px 28px 10px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.4), 0 0 20px rgba(139, 92, 246, 0.2);
+            transform: rotate(-2deg);
+            transition: all 0.4s ease;
+        }
+
+        @media (min-width: 640px) {
+            .polaroid-frame {
+                padding: 12px 12px 35px 12px;
+            }
+        }
+
+        .polaroid-frame:hover {
+            transform: rotate(0deg) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 30px rgba(236, 72, 153, 0.4);
+        }
+
+        /* ThreeJS Canvas Overlay */
+        #three-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Tooltip style */
+        .custom-tooltip {
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            transform: translateY(10px);
+        }
+
+        .tooltip-trigger:hover .custom-tooltip,
+        .tooltip-trigger:active .custom-tooltip {
+            visibility: visible;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Hide scrollbars during step presentation */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Equalizer Animation */
+        .eq-bar {
+            width: 3px;
+            background: linear-gradient(to top, #ec4899, #a855f7);
+            border-radius: 2px;
+            animation: eqAnim 0.6s ease-in-out infinite alternate;
+        }
+        .eq-bar:nth-child(1) { height: 16px; animation-delay: 0.1s; }
+        .eq-bar:nth-child(2) { height: 24px; animation-delay: 0.3s; }
+        .eq-bar:nth-child(3) { height: 12px; animation-delay: 0.2s; }
+        .eq-bar:nth-child(4) { height: 20px; animation-delay: 0.4s; }
+
+        @keyframes eqAnim {
+            0% { transform: scaleY(0.3); }
+            100% { transform: scaleY(1.1); }
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-200 antialiased relative selection:bg-purple-500 selection:text-white no-scrollbar">
+
+    <!-- Aurora Animated Layer 1 -->
+    <div id="aurora-bg" class="aurora-bg"></div>
+
+    <!-- 3D Floating Elements Canvas Layer 2 -->
+    <canvas id="three-canvas"></canvas>
+
+    <!-- Top Navigation & Glassmorphic Progress Bar -->
+    <header class="fixed top-0 left-0 w-full z-50 p-3 sm:p-4 md:p-6 flex justify-between items-center backdrop-blur-md bg-darkbg/60 border-b border-white/10">
+        <div class="flex items-center space-x-1.5 sm:space-x-2">
+            <span class="text-lg sm:text-xl">🐦</span>
+            <span class="font-bold tracking-wider text-[10px] sm:text-xs md:text-sm uppercase bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-400 truncate max-w-[150px] sm:max-w-none">
+                Angry Bird & Cutie
+            </span>
+        </div>
+
+        <!-- Progress Container -->
+        <div class="flex items-center space-x-2 sm:space-x-4">
+            <div class="w-16 sm:w-28 md:w-40 h-1.5 sm:h-2 bg-white/10 rounded-full overflow-hidden border border-white/10 p-[1px]">
+                <div id="progress-indicator" class="h-full w-1/5 bg-gradient-to-r from-purple-500 via-blue-500 via-pink-500 to-amber-400 rounded-full transition-all duration-700 cubic-bezier(0.4, 0, 0.2, 1)"></div>
+            </div>
+            <span id="step-counter" class="font-mono text-[10px] sm:text-xs md:text-sm text-purple-300 font-semibold tracking-widest whitespace-nowrap">01 / 05</span>
+        </div>
+    </header>
+
+    <!-- Main Interactive Story Wrapper -->
+    <main class="relative z-10 min-h-screen flex items-center justify-center p-3 sm:p-6 md:p-12 pt-20 sm:pt-24 md:pt-28 pb-16">
+        <div class="w-full max-w-3xl mx-auto">
+
+            <!-- STEP 1: BEFORE APRIL 2026 -->
+            <section id="step-1" class="story-step glass-card p-5 sm:p-8 md:p-12 transition-all duration-500">
+                <div class="space-y-4 sm:space-y-6 text-center sm:text-left">
+                    <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-300 text-[10px] sm:text-xs font-semibold uppercase tracking-wider">
+                        <span>Chapter 01</span> • <span>Before April 2026</span>
+                    </div>
+
+                    <h1 class="text-2xl sm:text-4xl md:text-5xl font-serif font-bold leading-tight gradient-heading">
+                        Funny How Things Change... <span class="angry-bird-hover tooltip-trigger relative inline-block text-3xl sm:text-4xl">🐦
+                            <span class="custom-tooltip absolute -top-10 left-1/2 -translate-x-1/2 text-[10px] sm:text-xs bg-red-900/90 text-red-200 px-2 py-1 rounded-md border border-red-500/30 whitespace-nowrap shadow-lg">
+                                Don't make her angry 😂
+                            </span>
+                        </span>
+                    </h1>
+
+                    <div class="space-y-3 sm:space-y-4 text-slate-300 text-sm sm:text-lg leading-relaxed font-light">
+                        <p>We've known each other for almost two years, but somehow we were never really close.</p>
+                        <p class="text-slate-400 italic">And if I'm being completely honest... you probably didn't like me very much either. 😂</p>
+                        <p>In fact, I'm pretty sure this particular <strong class="text-purple-300 font-normal">Angry Bird</strong> had a special level of irritation reserved just for me back then.</p>
+                    </div>
+
+                    <div class="pt-4 sm:pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-6">
+                        <div class="text-center sm:text-left">
+                            <span class="block text-[10px] sm:text-xs uppercase text-slate-400 tracking-widest">The Turning Point</span>
+                            <span class="text-xl sm:text-2xl font-serif font-bold text-amber-300 tracking-wider" id="cinematic-date">APRIL 2026</span>
+                        </div>
+
+                        <button onclick="nextStep(2)" class="btn-gradient px-6 sm:px-8 py-3 sm:py-3.5 rounded-full font-bold text-sm sm:text-base text-white shadow-lg flex items-center gap-2 group cursor-pointer w-full sm:w-auto justify-center">
+                            <span>And Everything Changed</span>
+                            <i class="fa-solid fa-arrow-right transition-transform group-hover:translate-x-1"></i>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- STEP 2: APRIL & MAY 2026 -->
+            <section id="step-2" class="story-step glass-card p-5 sm:p-8 md:p-12 hidden transition-all duration-500">
+                <div class="space-y-4 sm:space-y-6">
+                    <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-300 text-[10px] sm:text-xs font-semibold uppercase tracking-wider">
+                        <span>Chapter 02</span> • <span>The Project Spark</span>
+                    </div>
+
+                    <h2 class="text-2xl sm:text-4xl font-serif font-bold gradient-heading">
+                        And Then You Joined My Project... 👩‍💻
+                    </h2>
+
+                    <p class="text-slate-300 text-sm sm:text-lg leading-relaxed">
+                        April 2026 is when our story actually started changing. You came into my project as a colleague, and slowly, without either of us really noticing, we started talking more.
+                    </p>
+
+                    <!-- Mini Timeline Cards -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 my-4 sm:my-6">
+                        <div class="p-3.5 sm:p-4 rounded-xl bg-white/5 border border-white/10 hover:border-purple-500/40 transition-all hover:bg-white/10">
+                            <div class="text-amber-400 font-mono text-[10px] sm:text-xs font-bold mb-0.5 sm:mb-1">APRIL 2026</div>
+                            <div class="font-bold text-white flex items-center gap-2 text-sm sm:text-base">
+                                <span>👩‍💻</span> Colleagues & Project Teammates
+                            </div>
+                            <p class="text-xs text-slate-400 mt-1.5 sm:mt-2">Work chats that slowly started lingering a few minutes longer than needed.</p>
+                        </div>
+
+                        <div class="p-3.5 sm:p-4 rounded-xl bg-white/5 border border-white/10 hover:border-pink-500/40 transition-all hover:bg-white/10">
+                            <div class="text-pink-400 font-mono text-[10px] sm:text-xs font-bold mb-0.5 sm:mb-1">MAY 2026</div>
+                            <div class="font-bold text-white flex items-center gap-2 text-sm sm:text-base">
+                                <span>📱</span> Instagram + Work Reels
+                            </div>
+                            <p class="text-xs text-slate-400 mt-1.5 sm:mt-2">Following each other on Insta, sharing funny work memes and reels.</p>
+                        </div>
+                    </div>
+
+                    <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+                        By May, it was still simple, casual, everyday stuff... but somehow those little daily interactions became the quiet beginning of something much bigger.
+                    </p>
+
+                    <div class="pt-4 sm:pt-6 border-t border-white/10 flex justify-between items-center">
+                        <button onclick="nextStep(1)" class="text-slate-400 hover:text-white text-xs sm:text-sm font-medium transition-colors">
+                            ← Back
+                        </button>
+
+                        <button onclick="nextStep(3)" class="btn-gradient px-6 sm:px-8 py-3 sm:py-3.5 rounded-full font-bold text-sm sm:text-base text-white shadow-lg flex items-center gap-2 group cursor-pointer">
+                            <span>Then Came June...</span>
+                            <i class="fa-solid fa-arrow-right transition-transform group-hover:translate-x-1"></i>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- STEP 3: JUNE 2026 -->
+            <section id="step-3" class="story-step glass-card p-5 sm:p-8 md:p-12 hidden transition-all duration-500">
+                <div class="space-y-4 sm:space-y-6">
+                    <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-pink-500/10 border border-pink-500/20 text-pink-300 text-[10px] sm:text-xs font-semibold uppercase tracking-wider">
+                        <span>Chapter 03</span> • <span>Beyond Work</span>
+                    </div>
+
+                    <h2 class="text-2xl sm:text-4xl font-serif font-bold gradient-heading">
+                        Somewhere Along The Way... ✨
+                    </h2>
+
+                    <p class="text-slate-300 text-sm sm:text-lg leading-relaxed">
+                        June was when things really started shifting. Our conversations slowly stopped being only about work.
+                    </p>
+
+                    <!-- Interactive Floating Chat Bubbles -->
+                    <div class="space-y-2.5 sm:space-y-3 my-4 sm:my-6 p-3 sm:p-4 rounded-2xl bg-black/30 border border-white/10 backdrop-blur-sm">
+                        <div class="flex justify-start">
+                            <div class="bg-slate-800 text-slate-200 px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-2xl rounded-tl-none text-xs sm:text-sm max-w-[85%] sm:max-w-[80%] border border-white/5 shadow-md">
+                                "How was your day today?" 🤔
+                            </div>
+                        </div>
+                        <div class="flex justify-end">
+                            <div class="bg-purple-600/80 text-white px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-2xl rounded-tr-none text-xs sm:text-sm max-w-[85%] sm:max-w-[80%] border border-purple-400/30 shadow-md">
+                                "Honestly exhausting! Wait till I tell you about this random thought I had... 😂"
+                            </div>
+                        </div>
+                        <div class="flex justify-start">
+                            <div class="bg-slate-800 text-slate-200 px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-2xl rounded-tl-none text-xs sm:text-sm max-w-[85%] sm:max-w-[80%] border border-white/5 shadow-md">
+                                *Sends 5 random Instagram reels in a row* 📲
+                            </div>
+                        </div>
+                        <div class="flex justify-end">
+                            <div class="bg-purple-600/80 text-white px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-2xl rounded-tr-none text-xs sm:text-sm max-w-[85%] sm:max-w-[80%] border border-purple-400/30 shadow-md">
+                                "Inside jokes starting to build up... 🤫"
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="text-slate-300 text-sm sm:text-lg leading-relaxed font-light">
+                        We started talking about our lives, our daily routines, personal thoughts, and basically everything in between. Somewhere between all those messages, talking to you became something I genuinely looked forward to every single day.
+                    </p>
+
+                    <div class="pt-4 sm:pt-6 border-t border-white/10 flex justify-between items-center">
+                        <button onclick="nextStep(2)" class="text-slate-400 hover:text-white text-xs sm:text-sm font-medium transition-colors">
+                            ← Back
+                        </button>
+
+                        <button onclick="nextStep(4)" class="btn-gradient px-6 sm:px-8 py-3 sm:py-3.5 rounded-full font-bold text-sm sm:text-base text-white shadow-lg flex items-center gap-2 group cursor-pointer">
+                            <span>The Hyderabad Chapter</span>
+                            <i class="fa-solid fa-arrow-right transition-transform group-hover:translate-x-1"></i>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- STEP 4: JULY 2026 - HYDERABAD -->
+            <section id="step-4" class="story-step glass-card p-5 sm:p-8 md:p-12 hidden transition-all duration-500">
+                <div class="space-y-4 sm:space-y-6">
+                    <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-300 text-[10px] sm:text-xs font-semibold uppercase tracking-wider">
+                        <span>Chapter 04</span> • <span id="location-pin" class="cursor-pointer">📍 <span id="hometown-text">Hyderabad</span></span>
+                    </div>
+
+                    <h2 class="text-2xl sm:text-4xl font-serif font-bold gradient-heading">
+                        Those Two Days in <span id="hometown-title">Hyderabad</span> ❤️
+                    </h2>
+
+                    <p class="text-slate-300 text-sm sm:text-lg leading-relaxed">
+                        In July, I visited your hometown for office work. And somehow, those two days became one of my absolute favourite memories of this entire journey.
+                    </p>
+
+                    <!-- Polaroid Photo Frame & Animated Clock Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 items-center my-4 sm:my-6">
+                        <!-- Floating Polaroid Photo Frame -->
+                        <div class="flex justify-center">
+                            <div class="polaroid-frame max-w-[200px] sm:max-w-[240px]">
+                                <div class="relative overflow-hidden rounded bg-slate-900 aspect-square mb-2 sm:mb-3">
+                                    <img src="Birthday.jpeg" 
+                                         alt="Memory in Hyderabad" 
+                                         class="w-full h-full object-cover" 
+                                         onerror="this.onerror=null; this.src='https://placehold.co/400x400/2a1b3d/ffffff?text=Hyderabad+Memories+❤️';">
+                                </div>
+                                <p id="polaroid-caption" class="text-slate-800 font-serif text-[11px] sm:text-xs text-center font-bold">
+                                    Those two unforgettable days in Hyderabad.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Animated Late Night Clock -->
+                        <div class="bg-black/40 p-4 sm:p-5 rounded-2xl border border-white/10 space-y-3 sm:space-y-4 text-center">
+                            <span class="text-[10px] sm:text-xs uppercase tracking-widest text-slate-400">Back Home... But Still Talking</span>
+                            <div class="text-3xl sm:text-4xl font-mono font-bold text-amber-400 tracking-wider flex items-center justify-center gap-2">
+                                <i class="fa-regular fa-clock text-pink-400 text-xl sm:text-2xl animate-pulse"></i>
+                                <span id="night-clock">11:00 PM</span>
+                            </div>
+                            <p id="clock-status-text" class="text-xs text-slate-300 italic min-h-[32px]">
+                                "I came back home... but our conversations definitely weren't ending there! 😂"
+                            </p>
+                            <div class="w-full bg-white/10 h-1.5 rounded-full overflow-hidden">
+                                <div id="clock-progress" class="bg-gradient-to-r from-amber-400 to-pink-500 h-full w-0 transition-all duration-300"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+                        You treated me like you'd known me for years. You made me feel so comfortable, and for those two days, we talked, laughed, and created memories that completely changed our bond forever.
+                    </p>
+
+                    <div class="pt-4 sm:pt-6 border-t border-white/10 flex justify-between items-center">
+                        <button onclick="nextStep(3)" class="text-slate-400 hover:text-white text-xs sm:text-sm font-medium transition-colors">
+                            ← Back
+                        </button>
+
+                        <button onclick="nextStep(5)" class="btn-gradient px-6 sm:px-8 py-3 sm:py-3.5 rounded-full font-bold text-sm sm:text-base text-white shadow-lg flex items-center gap-2 group cursor-pointer">
+                            <span>And Then... Every Day</span>
+                            <i class="fa-solid fa-arrow-right transition-transform group-hover:translate-x-1"></i>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- STEP 5: US, NOW -->
+            <section id="step-5" class="story-step glass-card p-5 sm:p-8 md:p-12 hidden transition-all duration-500">
+                <div class="space-y-4 sm:space-y-6">
+                    <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-[10px] sm:text-xs font-semibold uppercase tracking-wider">
+                        <span>Chapter 05</span> • <span>Present Day</span>
+                    </div>
+
+                    <h2 class="text-2xl sm:text-4xl font-serif font-bold gradient-heading">
+                        Somehow, You Became Part of My Everyday Life. 💫
+                    </h2>
+
+                    <div class="space-y-3 sm:space-y-4 text-slate-300 text-sm sm:text-lg leading-relaxed font-light">
+                        <p>After I returned, we started talking every single day. Conversations extending until 3 or 4 in the morning became our new normal. 😂</p>
+                        
+                        <p>From random life updates and totally unnecessary conversations, to serious talks and stupid arguments — talking to you slowly became an essential part of my daily routine.</p>
+
+                        <div class="p-3.5 sm:p-4 rounded-xl bg-purple-900/20 border border-purple-500/30 text-purple-200 my-3 sm:my-4 text-xs sm:text-base">
+                            <p class="font-semibold mb-1">And yes... we fight almost every single day! 🥊</p>
+                            <p class="text-purple-300/80 text-xs sm:text-sm">But here's what I genuinely value: no matter how annoyed we get, you always put your ego aside and come back to talk to me. That means more than you know.</p>
+                        </div>
+                    </div>
+
+                    <div class="pt-4 sm:pt-6 border-t border-white/10 flex justify-between items-center">
+                        <button onclick="nextStep(4)" class="text-slate-400 hover:text-white text-xs sm:text-sm font-medium transition-colors">
+                            ← Back
+                        </button>
+
+                        <button onclick="showEmotionalFinale()" class="btn-gradient px-6 sm:px-8 py-3 sm:py-3.5 rounded-full font-bold text-sm sm:text-base text-white shadow-lg flex items-center gap-2 group cursor-pointer">
+                            <span>The Final Message ✨</span>
+                            <i class="fa-solid fa-sparkles transition-transform group-hover:rotate-12"></i>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- EMOTIONAL FINALE & CELEBRATION SECTION -->
+            <section id="finale-section" class="glass-card p-5 sm:p-8 md:p-12 hidden transition-all duration-700 text-center relative overflow-hidden">
+                <div id="finale-content" class="space-y-6 sm:space-y-8">
+                    
+                    <div class="inline-block px-3.5 py-1 rounded-full bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-400/30 text-purple-200 text-[10px] sm:text-xs uppercase tracking-widest font-semibold">
+                        A Special Note For You
+                    </div>
+
+                    <h2 class="text-2xl sm:text-4xl md:text-5xl font-serif font-bold gradient-heading leading-tight">
+                        And Somehow... Here We Are. ✨
+                    </h2>
+
+                    <div class="space-y-3 sm:space-y-4 text-slate-300 text-sm sm:text-lg max-w-2xl mx-auto leading-relaxed font-light">
+                        <p>It's kind of crazy to think that we knew each other for almost two years, barely talked, and then in just a few months, you became such an important part of my everyday life.</p>
+                        <p class="text-amber-200/90 italic font-normal">You came into my life unexpectedly, almost like a little bit of magic. ✨</p>
+                        <p>I genuinely enjoy talking to you, spending time with you, fighting with you, annoying you, and somehow... even getting annoyed by you. 😂</p>
+                    </div>
+
+                    <!-- Angry Bird vs Cutie Dual Card Interaction -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 max-w-xl mx-auto my-4 sm:my-6">
+                        <div class="p-4 sm:p-5 rounded-2xl bg-red-950/30 border border-red-500/30 hover:border-red-400 transition-all angry-bird-hover group text-left">
+                            <div class="text-3xl sm:text-4xl mb-1.5 group-hover:scale-110 transition-transform">🐦</div>
+                            <h3 class="font-bold text-red-200 text-base sm:text-lg">This Angry Bird</h3>
+                            <p class="text-xs text-red-300/70 mt-1">Feisty, dramatic, quick to fight, but always holds a heart of gold.</p>
+                        </div>
+
+                        <div class="p-4 sm:p-5 rounded-2xl bg-pink-950/30 border border-pink-500/30 hover:border-pink-400 transition-all cutie-hover group text-left">
+                            <div class="text-3xl sm:text-4xl mb-1.5 group-hover:scale-110 transition-transform">✨</div>
+                            <h3 class="font-bold text-pink-200 text-base sm:text-lg">This Cutie</h3>
+                            <p class="text-xs text-pink-300/70 mt-1">Caring, hilarious, comforting, and easily one of my favourite people.</p>
+                        </div>
+                    </div>
+
+                    <div class="text-xl sm:text-3xl font-serif font-bold text-amber-300 my-3 sm:my-4">
+                        "Thank you so much for being in my life." ❤️
+                    </div>
+
+                    <!-- Birthday Wish Text -->
+                    <div class="p-4 sm:p-6 rounded-2xl bg-white/5 border border-white/10 max-w-2xl mx-auto text-left space-y-2.5 sm:space-y-3">
+                        <h4 class="text-lg sm:text-xl font-bold text-pink-300 font-serif text-center mb-1">Happy Birthday, Cutie! 🎂✨</h4>
+                        <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                            I hope this year brings you infinite happiness, success, exciting opportunities, amazing experiences, and countless reasons to smile.
+                        </p>
+                        <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                            I hope you continue being exactly who you are — funny, dramatic, caring, slightly annoying, occasionally angry, and somehow still a Cutie. 😂🐦
+                        </p>
+                        <p class="text-[11px] sm:text-xs text-slate-400 italic text-center pt-2 border-t border-white/10" id="final-custom-message">
+                            "Thank you for every conversation, argument, late-night talk, and memory."
+                        </p>
+                    </div>
+
+                    <!-- Grand Finale Trigger Button -->
+                    <div class="pt-2 sm:pt-4">
+                        <button id="celebrate-btn" onclick="triggerGrandFinale()" class="btn-gradient px-8 sm:px-10 py-4 sm:py-5 rounded-full font-extrabold text-base sm:text-lg text-white shadow-2xl hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-3 mx-auto cursor-pointer border border-pink-300/30 w-full sm:w-auto">
+                            <span>Celebrate, Angry Bird! 🎉</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Grand Celebration Overlay Screen -->
+                <div id="grand-reveal" class="hidden space-y-6 sm:space-y-8 py-4 sm:py-8 animate-fade-in">
+                    <div class="text-4xl sm:text-7xl animate-bounce">🐦 🎂 ✨</div>
+                    <h1 class="text-2xl sm:text-5xl md:text-6xl font-serif font-extrabold gradient-heading leading-tight">
+                        Happy Birthday, Angry Bird!
+                    </h1>
+                    <p class="text-base sm:text-2xl font-light text-purple-200 max-w-xl mx-auto px-2">
+                        Thank you for being such an irreplaceable part of my everyday life.
+                    </p>
+
+                    <!-- Energetic Music Player Card -->
+                    <div class="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-purple-900/50 to-pink-900/50 border border-purple-400/30 max-w-md mx-auto shadow-2xl backdrop-blur-md flex items-center justify-between gap-4">
+                        <div class="flex items-center gap-3">
+                            <button id="music-toggle-btn" onclick="toggleAudio()" class="w-12 h-12 rounded-full bg-pink-500 hover:bg-pink-400 text-white flex items-center justify-center shadow-lg transition-transform active:scale-90 cursor-pointer">
+                                <i id="music-icon" class="fa-solid fa-pause text-lg"></i>
+                            </button>
+                            <div class="text-left">
+                                <div class="text-xs uppercase text-pink-300 font-bold tracking-wider">Now Playing</div>
+                                <div class="text-sm font-bold text-white font-serif">Energetic Birthday Beat 🎵</div>
+                            </div>
+                        </div>
+
+                        <!-- Equalizer Animation Bars -->
+                        <div id="equalizer" class="flex items-end gap-1 h-6 pr-2">
+                            <div class="eq-bar"></div>
+                            <div class="eq-bar"></div>
+                            <div class="eq-bar"></div>
+                            <div class="eq-bar"></div>
+                        </div>
+                    </div>
+
+                    <div class="p-4 sm:p-6 rounded-2xl bg-black/40 border border-amber-400/30 max-w-lg mx-auto shadow-2xl backdrop-blur-md">
+                        <p id="final-banner-text" class="text-sm sm:text-lg text-amber-200 font-serif leading-relaxed">
+                            Here's to more conversations, more fights, more late nights, more random moments, and many more memories together. ❤️
+                        </p>
+                    </div>
+
+                    <div class="pt-2 sm:pt-4">
+                        <p class="text-lg sm:text-2xl font-serif font-bold text-pink-300">Stay the same wonderful Angry Bird. ✨</p>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <script>
+        /* ==========================================================================
+           PERSONALIZATION VARIABLES (Easily customizable)
+           ========================================================================== */
+        const friendName = "Angry Bird";
+        const nickname = "Cutie";
+        const importantMonth = "April 2026";
+        const hometown = "Hyderabad";
+        const memoryCaption = "Those two unforgettable days in Hyderabad.";
+        const finalMessage = "Thank you for being part of my everyday life. Here's to more conversations, fights, late nights, random moments, and unforgettable memories together.";
+
+        // Current Step Tracker
+        let currentStep = 1;
+
+        // Apply personalization values on page load
+        document.addEventListener("DOMContentLoaded", () => {
+            document.getElementById("hometown-text").innerText = hometown;
+            document.getElementById("hometown-title").innerText = hometown;
+            document.getElementById("polaroid-caption").innerText = memoryCaption;
+            document.getElementById("final-custom-message").innerText = `"${finalMessage}"`;
+            
+            initThreeJS();
+            initMicroInteractions();
+        });
+
+        /* ==========================================================================
+           STEP NAVIGATION & PROGRESS
+           ========================================================================== */
+        function updateProgress(step) {
+            const indicator = document.getElementById("progress-indicator");
+            const counter = document.getElementById("step-counter");
+            
+            const percentages = { 1: "20%", 2: "40%", 3: "60%", 4: "80%", 5: "100%" };
+            indicator.style.width = percentages[step] || "100%";
+            counter.innerText = `0${step} / 05`;
+        }
+
+        function nextStep(targetStep) {
+            const currentElem = document.getElementById(`step-${currentStep}`);
+            const nextElem = document.getElementById(`step-${targetStep}`);
+
+            if (!currentElem || !nextElem) return;
+
+            gsap.to(currentElem, {
+                opacity: 0,
+                y: -20,
+                duration: 0.35,
+                onComplete: () => {
+                    currentElem.classList.add("hidden");
+                    nextElem.classList.remove("hidden");
+                    
+                    gsap.fromTo(nextElem, 
+                        { opacity: 0, y: 25, scale: 0.97 }, 
+                        { opacity: 1, y: 0, scale: 1, duration: 0.45, ease: "power2.out" }
+                    );
+
+                    currentStep = targetStep;
+                    updateProgress(currentStep);
+
+                    // Trigger specific step animations
+                    if (targetStep === 4) {
+                        animateClock();
+                    }
+                }
+            });
+        }
+
+        function showEmotionalFinale() {
+            const currentElem = document.getElementById(`step-5`);
+            const finaleElem = document.getElementById(`finale-section`);
+
+            gsap.to(currentElem, {
+                opacity: 0,
+                y: -20,
+                duration: 0.35,
+                onComplete: () => {
+                    currentElem.classList.add("hidden");
+                    finaleElem.classList.remove("hidden");
+                    
+                    gsap.fromTo(finaleElem, 
+                        { opacity: 0, scale: 0.95 }, 
+                        { opacity: 1, scale: 1, duration: 0.6, ease: "power2.out" }
+                    );
+
+                    document.getElementById("progress-indicator").style.width = "100%";
+                    document.getElementById("step-counter").innerText = "05 / 05";
+                    
+                    // Boost Aurora brightness for emotional climax
+                    document.getElementById("aurora-bg").classList.add("aurora-bright");
+                }
+            });
+        }
+
+        /* ==========================================================================
+           MICRO-INTERACTIONS & ANIMATIONS
+           ========================================================================== */
+        function animateClock() {
+            const times = ["11:00 PM", "12:00 AM", "01:00 AM", "02:00 AM", "03:30 AM"];
+            const texts = [
+                "Just starting to chat...",
+                "Should probably sleep... but nah! 😂",
+                "Deep life talks and random thoughts...",
+                "Laughing at stupid jokes at 2 AM...",
+                "Still talking! Talking to you became part of my daily routine."
+            ];
+
+            let index = 0;
+            const clockElem = document.getElementById("night-clock");
+            const textElem = document.getElementById("clock-status-text");
+            const progressElem = document.getElementById("clock-progress");
+
+            const interval = setInterval(() => {
+                index++;
+                if (index < times.length) {
+                    clockElem.innerText = times[index];
+                    textElem.innerText = `"${texts[index]}"`;
+                    progressElem.style.width = `${(index / (times.length - 1)) * 100}%`;
+                } else {
+                    clearInterval(interval);
+                }
+            }, 800);
+        }
+
+        function initMicroInteractions() {
+            const pin = document.getElementById("location-pin");
+            if (pin) {
+                pin.addEventListener("click", () => {
+                    gsap.to(pin, { y: -10, yoyo: true, repeat: 3, duration: 0.15 });
+                });
+            }
+        }
+
+        /* ==========================================================================
+           ENERGETIC SYNTHESIZED BIRTHDAY MUSIC (WEB AUDIO API)
+           ========================================================================== */
+        let audioCtx = null;
+        let isAudioPlaying = false;
+        let audioTimer = null;
+
+        function playTone(freq, type, duration, startTime, gainVal = 0.15) {
+            if (!audioCtx) return;
+            try {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, startTime);
+
+                gain.gain.setValueAtTime(gainVal, startTime);
+                gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
+
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                osc.start(startTime);
+                osc.stop(startTime + duration);
+            } catch(e){}
+        }
+
+        function startEnergeticBirthdayMusic() {
+            if (isAudioPlaying) return;
+            
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            if (!audioCtx) {
+                audioCtx = new AudioContext();
+            }
+
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+
+            isAudioPlaying = true;
+            updateEqualizer(true);
+
+            // High energy uptempo melody notes (Happy Birthday variations with dynamic synth bass)
+            const tempo = 0.22; // Fast energetic beat
+            const notes = [
+                // Phrase 1
+                { f: 261.63, d: 1 }, { f: 261.63, d: 1 }, { f: 293.66, d: 2 }, { f: 261.63, d: 2 }, { f: 349.23, d: 2 }, { f: 329.63, d: 4 },
+                // Phrase 2
+                { f: 261.63, d: 1 }, { f: 261.63, d: 1 }, { f: 293.66, d: 2 }, { f: 261.63, d: 2 }, { f: 392.00, d: 2 }, { f: 349.23, d: 4 },
+                // Phrase 3
+                { f: 261.63, d: 1 }, { f: 261.63, d: 1 }, { f: 523.25, d: 2 }, { f: 440.00, d: 2 }, { f: 349.23, d: 2 }, { f: 329.63, d: 2 }, { f: 293.66, d: 3 },
+                // Phrase 4 (Upbeat High)
+                { f: 466.16, d: 1 }, { f: 466.16, d: 1 }, { f: 440.00, d: 2 }, { f: 349.23, d: 2 }, { f: 392.00, d: 2 }, { f: 349.23, d: 4 }
+            ];
+
+            let loopTime = 0;
+
+            function scheduleSequence() {
+                let currentTime = audioCtx.currentTime + 0.05;
+
+                notes.forEach((note) => {
+                    const dur = note.d * tempo;
+                    // Lead melody synth
+                    playTone(note.f, 'triangle', dur * 0.9, currentTime, 0.2);
+                    // Sparkle harmonic synth layer
+                    playTone(note.f * 2, 'sine', dur * 0.5, currentTime, 0.05);
+
+                    // Energetic Synth Bass Kick Beat on accents
+                    if (note.d >= 2) {
+                        playTone(100, 'sine', 0.15, currentTime, 0.3);
+                    }
+
+                    currentTime += dur;
+                });
+
+                loopTime = (currentTime - audioCtx.currentTime) * 1000;
+                
+                if (isAudioPlaying) {
+                    audioTimer = setTimeout(scheduleSequence, loopTime);
+                }
+            }
+
+            scheduleSequence();
+        }
+
+        function stopMusic() {
+            isAudioPlaying = false;
+            if (audioTimer) clearTimeout(audioTimer);
+            updateEqualizer(false);
+        }
+
+        function toggleAudio() {
+            if (isAudioPlaying) {
+                stopMusic();
+            } else {
+                startEnergeticBirthdayMusic();
+            }
+        }
+
+        function updateEqualizer(playing) {
+            const icon = document.getElementById("music-icon");
+            const eqBars = document.querySelectorAll(".eq-bar");
+
+            if (playing) {
+                if(icon) icon.className = "fa-solid fa-pause text-lg";
+                eqBars.forEach(bar => bar.style.animationPlayState = "running");
+            } else {
+                if(icon) icon.className = "fa-solid fa-play text-lg pl-0.5";
+                eqBars.forEach(bar => bar.style.animationPlayState = "paused");
+            }
+        }
+
+        /* ==========================================================================
+           GRAND FINALE CELEBRATION
+           ========================================================================== */
+        function triggerGrandFinale() {
+            const celebrateBtn = document.getElementById("celebrate-btn");
+            const finaleContent = document.getElementById("finale-content");
+            const grandReveal = document.getElementById("grand-reveal");
+
+            // Fade out button and main content partially
+            gsap.to(celebrateBtn, { opacity: 0, scale: 0.5, duration: 0.3 });
+            
+            gsap.to(finaleContent, {
+                opacity: 0,
+                height: 0,
+                duration: 0.5,
+                onComplete: () => {
+                    finaleContent.classList.add("hidden");
+                    grandReveal.classList.remove("hidden");
+                    
+                    gsap.fromTo(grandReveal, 
+                        { opacity: 0, y: 30 }, 
+                        { opacity: 1, y: 0, duration: 0.8, ease: "back.out(1.7)" }
+                    );
+
+                    // Launch energetic birthday music
+                    startEnergeticBirthdayMusic();
+                }
+            });
+
+            // 1. Confetti Burst from Bottom Corners
+            const count = window.innerWidth < 640 ? 120 : 220;
+            const defaults = { origin: { y: 0.85 } };
+
+            function fire(particleRatio, opts) {
+                confetti(Object.assign({}, defaults, opts, {
+                    particleCount: Math.floor(count * particleRatio)
+                }));
+            }
+
+            fire(0.25, { spread: 26, startVelocity: 55, shapes: ['star'] });
+            fire(0.2, { spread: 60, colors: ['#c084fc', '#f472b6', '#38bdf8'] });
+            fire(0.35, { spread: 100, decay: 0.91, scalar: 0.8 });
+            fire(0.1, { spread: 120, startVelocity: 25, decay: 0.92, colors: ['#fef08a', '#ffffff'] });
+            fire(0.1, { spread: 120, startVelocity: 45 });
+
+            // 2. Continuous Emoji Confetti Shower
+            setTimeout(() => {
+                const duration = 5 * 1000;
+                const animationEnd = Date.now() + duration;
+
+                const frame = () => {
+                    confetti({
+                        particleCount: 2,
+                        angle: 60,
+                        spread: 55,
+                        origin: { x: 0 },
+                        colors: ['#a855f7', '#ec4899', '#3b82f6']
+                    });
+                    confetti({
+                        particleCount: 2,
+                        angle: 120,
+                        spread: 55,
+                        origin: { x: 1 },
+                        colors: ['#f59e0b', '#10b981', '#f43f5e']
+                    });
+
+                    if (Date.now() < animationEnd) {
+                        requestAnimationFrame(frame);
+                    }
+                };
+                frame();
+            }, 400);
+
+            // 3. Energetic ThreeJS background speedup
+            if (window.speedUpThreeJS) {
+                window.speedUpThreeJS();
+            }
+        }
+
+        /* ==========================================================================
+           THREE.JS FLOATING 3D BACKGROUND SYSTEM
+           ========================================================================== */
+        function initThreeJS() {
+            const canvas = document.getElementById("three-canvas");
+            const scene = new THREE.Scene();
+
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 30;
+
+            const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+            // Floating elements group
+            const group = new THREE.Group();
+            scene.add(group);
+
+            // Responsive particle count
+            const isMobile = window.innerWidth < 768;
+            const count = isMobile ? 10 : 24;
+
+            // Simple Geometries representing sparkles, stars, gifts, and birds
+            const geometries = [
+                new THREE.TetrahedronGeometry(1.2), 
+                new THREE.IcosahedronGeometry(0.9), 
+                new THREE.BoxGeometry(1, 1, 1),     
+                new THREE.ConeGeometry(0.8, 1.5, 4) 
+            ];
+
+            const materials = [
+                new THREE.MeshPhongMaterial({ color: 0xc084fc, shininess: 80, transparent: true, opacity: 0.7 }), 
+                new THREE.MeshPhongMaterial({ color: 0x60a5fa, shininess: 80, transparent: true, opacity: 0.7 }), 
+                new THREE.MeshPhongMaterial({ color: 0xf472b6, shininess: 80, transparent: true, opacity: 0.7 }), 
+                new THREE.MeshPhongMaterial({ color: 0xfef08a, shininess: 100, transparent: true, opacity: 0.85 }) 
+            ];
+
+            const objects = [];
+
+            for (let i = 0; i < count; i++) {
+                const geom = geometries[Math.floor(Math.random() * geometries.length)];
+                const mat = materials[Math.floor(Math.random() * materials.length)];
+                const mesh = new THREE.Mesh(geom, mat);
+
+                mesh.position.x = (Math.random() - 0.5) * (isMobile ? 30 : 50);
+                mesh.position.y = (Math.random() - 0.5) * 40;
+                mesh.position.z = (Math.random() - 0.5) * 30;
+
+                mesh.rotation.x = Math.random() * Math.PI;
+                mesh.rotation.y = Math.random() * Math.PI;
+
+                const scale = (isMobile ? 0.4 : 0.6) + Math.random() * 0.6;
+                mesh.scale.set(scale, scale, scale);
+
+                mesh.userData = {
+                    speedY: 0.005 + Math.random() * 0.01,
+                    rotSpeedX: (Math.random() - 0.5) * 0.02,
+                    rotSpeedY: (Math.random() - 0.5) * 0.02,
+                    initialX: mesh.position.x,
+                    sineOffset: Math.random() * Math.PI * 2
+                };
+
+                group.add(mesh);
+                objects.push(mesh);
+            }
+
+            // Lights
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+            scene.add(ambientLight);
+
+            const pointLight = new THREE.PointLight(0xa855f7, 2, 100);
+            pointLight.position.set(10, 10, 20);
+            scene.add(pointLight);
+
+            const pointLight2 = new THREE.PointLight(0xec4899, 2, 100);
+            pointLight2.position.set(-10, -10, 20);
+            scene.add(pointLight2);
+
+            let mouseX = 0;
+            let mouseY = 0;
+            if (!isMobile) {
+                window.addEventListener("mousemove", (e) => {
+                    mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+                    mouseY = -(e.clientY / window.innerHeight - 0.5) * 2;
+                });
+            }
+
+            let clock = new THREE.Clock();
+            let speedMultiplier = 1;
+
+            window.speedUpThreeJS = () => {
+                speedMultiplier = 3.5;
+            };
+
+            function animate() {
+                requestAnimationFrame(animate);
+
+                const elapsedTime = clock.getElapsedTime();
+
+                objects.forEach((obj) => {
+                    obj.rotation.x += obj.userData.rotSpeedX * speedMultiplier;
+                    obj.rotation.y += obj.userData.rotSpeedY * speedMultiplier;
+
+                    obj.position.y += Math.sin(elapsedTime + obj.userData.sineOffset) * 0.015 * speedMultiplier;
+                    obj.position.x = obj.userData.initialX + Math.cos(elapsedTime * 0.5 + obj.userData.sineOffset) * 1.5;
+
+                    if (obj.position.y > 25) obj.position.y = -25;
+                    if (obj.position.y < -25) obj.position.y = 25;
+                });
+
+                camera.position.x += (mouseX * 3 - camera.position.x) * 0.03;
+                camera.position.y += (mouseY * 3 - camera.position.y) * 0.03;
+                camera.lookAt(scene.position);
+
+                renderer.render(scene, camera);
+            }
+
+            window.addEventListener("resize", () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+
+            animate();
+        }
+    </script>
+</body>
+</html>
